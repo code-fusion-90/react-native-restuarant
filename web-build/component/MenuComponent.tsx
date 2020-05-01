@@ -1,51 +1,33 @@
 import React, {Component} from 'react';
 import { View, FlatList, StyleSheet} from 'react-native';
-import { ListItem } from 'react-native-elements';
-import { DISHES } from '../shared/dishes';
-import Test from './testComponent';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { Tile } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
 
-type RootStackParamList = {
-    Menu: undefined;
-    DishDetail: {dishId: number};
-  };
-
-type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList,'Menu'>;
-
-interface Props {
-    navigation: ProfileScreenNavigationProp;
+const mapStateToProps = (state: any) => {
+    return {
+        dishes: state.dishes
+    }
 }
 
-interface State {
-    dishes: { id: number,
-        name: string,
-        image: string,
-        category: string,
-        label: string,
-        price: string,
-        featured: boolean,
-        description: string }[]
-}
 
-class Menu extends Component <Props, State>{
+class Menu extends Component <any>{
 
-        constructor(props: Props){
+        constructor(props: any){
             super(props);
-            this.state = {
-                dishes: DISHES
-            }
         }
 
  render(){
     const  navigation  = this.props.navigation;
-    const renderMenuItem = (props: {item: { name: string, description: string, id: number}, index: number}) => {
+    const renderMenuItem = (props: {item: any, index: number}) => {
         return (
-                <ListItem
+                <Tile
                     key={props.index}
                     title={props.item.name}
-                    subtitle={props.item.description}
+                    caption={props.item.description}
+                    featured
                     onPress={() => navigation.navigate('DishDetail', { dishId: props.item.id})}
-                    leftAvatar={{ source: require('./images/uthappizza.png')}}
+                    imageSrc={{ uri: baseUrl + props.item.image }}
                   />
         );
     };
@@ -53,7 +35,7 @@ class Menu extends Component <Props, State>{
     return (
          <View>
             <FlatList 
-                data={this.state.dishes}
+                data={this.props.dishes.dishes}
                     renderItem={renderMenuItem}
                     keyExtractor={item => item.id.toString()}
                 />
@@ -64,4 +46,4 @@ class Menu extends Component <Props, State>{
 }
 
 
-export default Menu;
+export default connect(mapStateToProps)(Menu);
