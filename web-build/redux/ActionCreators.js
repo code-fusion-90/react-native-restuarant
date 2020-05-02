@@ -3,10 +3,52 @@ import {baseUrl} from '../shared/baseUrl';
 
 
 //ADD NEW COMMENT
+export const postComment = (dishId, author, comment, rating) => (dispatch) => {
+    const newComment = {
+        dishId: dishId,
+        rating: rating,
+        author: author,
+        comment: comment
+    }
+    newComment.date =  new Date().toISOString();
+  
+    return fetch(baseUrl + 'comments', {
+        method: 'POST',
+        body: JSON.stringify(newComment),
+        headers: {
+            'content-type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.ok)
+            return response;
+        else{
+            let error= new Error("Error "+response.status+" : "+response.statusText);
+            error.response = response;
+            throw error;
+        }
+
+    }, err => {
+        let err = new Error(error.message);
+        throw err;
+
+    })
+    .then(response => response.json())
+    .then(response => dispatch(addComment(response)))
+    .catch(error =>  { console.log('post comments', error.message); 
+            alert('Your comment could not be posted\nError: '+error.message); });
+}
+
+const addComment = (newComment) => ({
+type: ActionTypes.ADD_COMMENT,
+payload: newComment
+})
+
+
+//ADD FAVORITE
 export const postFavorite = (dishId) => (dispatch) => {
-        setTimeout(() => {
-            dispatch(addFavorite(dishId));
-        }, 2000);
+        return fetch(baseUrl + 'dishes')
 }
 
 const addFavorite = (dishId) => ({

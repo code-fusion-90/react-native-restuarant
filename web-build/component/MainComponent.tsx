@@ -12,6 +12,7 @@ import Home from './HomeComponent';
 import Menu from './MenuComponent';
 import AboutUs from './AboutComponent';
 import ContactUs from './ContactComponent';
+import Reservation from './ReservationComponent';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -32,6 +33,7 @@ type RootStackParamList = {
     AboutUs: undefined,
     ContactUs: undefined
     DishDetail: {dishId: number},
+    TableReservation: undefined
   };
 
 const StackScreenOptions = {
@@ -109,6 +111,17 @@ function ContactUsStack(props: any){
 }
 
 
+//Reservation table
+function ReserveTable(props: any){
+        return(
+            <Stack.Navigator screenOptions={StackScreenOptions} >
+                <Stack.Screen name="TableReservation" component={Reservation}
+                    options={{ title: 'Reserve a table' ,  headerLeft: () => {  return <Icon name="menu" size={24} color="white" onPress = {()=> props.navigation.toggleDrawer()}/> } }} />
+            </Stack.Navigator>
+        );
+}
+
+
 class Main extends React.Component<any> {
 
     componentDidMount(){
@@ -153,6 +166,14 @@ class Main extends React.Component<any> {
                                         <Icon name="address-card" type="font-awesome" size={22}
                                         color={tintColor.color} />
                                     )}}
+                    />
+                    <Drawer.Screen name="ReservationTable" component={ReserveTable} 
+                        options= {{ title: 'Reserve Table', 
+                                    drawerLabel: "Reserve Table", 
+                                    drawerIcon: (tintColor) => (
+                                    <Icon name="info-circle" type="font-awesome" size={24}
+                                    color={tintColor.color} />
+                                )}}
                     />
             </Drawer.Navigator>
          </NavigationContainer>
