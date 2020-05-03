@@ -6,7 +6,7 @@ import { RouteProp } from '@react-navigation/native';
 import {  } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-import { postFavorite } from '../redux/ActionCreators';
+import { postFavorite, postComment } from '../redux/ActionCreators';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -17,7 +17,8 @@ const mapStateToProps = (state: any) => {
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
-    postFavorite: (dishId: any) => dispatch(postFavorite(dishId))
+    postFavorite: (dishId: any) => dispatch(postFavorite(dishId)),
+    postComment: (dishId, author, comment, rating) => dispatch(postComment(dishId, author, comment, rating))
 });
 
 type RootStackParamList = {
@@ -44,7 +45,7 @@ function RenderComments({comments}: any){
         return(
             <View key={props.index} style={{margin: 10}}>
                 <Text style={{fontSize: 14}}>{props.item.comment}</Text>
-                <Text style = {{fontSize: 12}}>{props.item.rating}</Text>
+                <Rating readonly imageSize={20} startingValue={props.item.rating} />
                 <Text style = {{fontSize: 12}}>{'-- ' + props.item.author + ', ' + props.item.date}</Text>
             </View>
         );
@@ -104,8 +105,10 @@ class DishDetail extends Component<any, any>{
         });
     }
 
-    handleComment = () => {
+    handleComment = (dishId) => {
         console.log(JSON.stringify(this.state));
+        this.props.postComment(dishId, this.state.inputname, this.state.comment, this.state.rating);
+        this.toggleFeedbackModal();
     }
 
 
@@ -134,7 +137,7 @@ class DishDetail extends Component<any, any>{
                         </View>
                         <View style ={{margin: 20}}>
                         <Button 
-                            onPress = {() => { this.handleComment()}}
+                            onPress = {() => { this.handleComment(dishId)}}
                             color="#512DA8"
                             title="Submit" 
                             />
