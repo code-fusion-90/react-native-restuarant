@@ -13,6 +13,7 @@ import Menu from './MenuComponent';
 import AboutUs from './AboutComponent';
 import ContactUs from './ContactComponent';
 import Reservation from './ReservationComponent';
+import Favorites from './FavoriteComponent';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -33,7 +34,8 @@ type RootStackParamList = {
     AboutUs: undefined,
     ContactUs: undefined
     DishDetail: {dishId: number},
-    TableReservation: undefined
+    TableReservation: undefined,
+    FavoriteDish: undefined
   };
 
 const StackScreenOptions = {
@@ -121,6 +123,16 @@ function ReserveTable(props: any){
         );
 }
 
+//Favorite Dish Companent
+function FavoriteDishStack(props: any){
+    return(
+        <Stack.Navigator screenOptions={StackScreenOptions} >
+            <Stack.Screen name="FavoriteDish" component={Favorites}
+                options={{ title: 'Favorite Dishes' ,  headerLeft: () => {  return <Icon name="menu" size={24} color="white" onPress = {()=> props.navigation.toggleDrawer()}/> } }} />
+        </Stack.Navigator>
+    );
+}
+
 
 class Main extends React.Component<any> {
 
@@ -158,7 +170,15 @@ class Main extends React.Component<any> {
                                    <Icon name="list" type="font-awesome" size={24}
                                     color={tintColor.color} />
                                 )}}
-                    />    
+                    />  
+                    <Drawer.Screen name="FavoriteDishes" component={FavoriteDishStack} 
+                        options= {{ title: 'Favorite Dishes', 
+                                    drawerLabel: 'Favorite Dishes',
+                                    drawerIcon: (tintColor) => (
+                                   <Icon name="heart" type="font-awesome" size={24}
+                                    color={tintColor.color} />
+                                )}}
+                    />     
                     <Drawer.Screen name="ContactUs" component={ContactUsStack} 
                             options= {{ title: 'Contact', 
                                         drawerLabel: "Contact Us", 
