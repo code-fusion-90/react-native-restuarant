@@ -1,5 +1,5 @@
 import React , {Component} from 'react';
-import {Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import {Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Alert, PanResponder} from 'react-native';
 import {Card, Icon, Rating, Input} from 'react-native-elements';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import {  } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite, postComment } from '../redux/ActionCreators';
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -52,27 +53,77 @@ function RenderComments({comments}: any){
     }
 
     return(
-        <Card title="Comments">
-            <FlatList data={comments}
-                renderItem = {renderCommentItem}
-                keyExtractor = {(item)=>item.id.toString()} />
-        </Card> 
+        <Animatable.View animation="fadeInUp" duration={2000} delay={1000}> 
+            <Card title="Comments">
+                <FlatList data={comments}
+                    renderItem = {renderCommentItem}
+                    keyExtractor = {(item)=>item.id.toString()} />
+            </Card> 
+        </Animatable.View>
     );
 }
 
 function RenderDish(props: any){
+
+    let view;
+
+    const handleViewRef = (ref: any) => view = ref;
+
+    const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
+        if ( dx < -100)
+            return true;
+        else
+            return false;
+    }
+
+    //Task 3. Changed dx value for my device.
+    const recognizeComment = ({ moveX, moveY, dx, dy }) => {
+        if ( dx > -100  )
+            return true;
+        else
+            return false;
+    }
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: (e, gestureState) => {
+            return true;
+        },
+        onPanResponderGrant: () => {view.rubberBand(1000).then(endState => console.log(endState.finished ? 'finished' : 'cancelled'));},
+        onPanResponderEnd: (e, gestureState) => {
+            console.log("pan responder end", gestureState);
+            if (recognizeDrag(gestureState))
+                Alert.alert(
+                    'Add Favorite',
+                    'Are you sure you wish to add ' + props.dish.name + ' to favorite?',
+                    [
+                    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                    {text: 'OK', onPress: () => {props.favorite ? console.log('Already favorite') : props.favPress('favorite')}},
+                    ],
+                    { cancelable: false }
+                );
+            if(recognizeComment(gestureState))
+                    props.toggleModal();
+
+            return true;
+        }
+    })
+
     if(props.dish!=null){
         return(
+            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+            ref={handleViewRef}
+            {...panResponder.panHandlers}>
                 <Card featuredTitle={props.dish.name}
                     image={ {uri: baseUrl + props.dish.image }}>
                     <Text style = {{margin: 10}}>
                         {props.dish.description}
                     </Text>
                     <Icon raised reverse name={ props.favorite ? 'heart' : 'heart-o' } type='font-awesome' color="#f50" 
-                            onPress = {() => props.favorite ? alert('Already favorite') : props.onPress('favorite')}/>
+                            onPress = {() => props.favorite ? alert('Already favorite') : props.favPress('favorite')}/>
                     <Icon raised reverse name={'pencil'} type='font-awesome' color="#512DA8" 
-                        onPress = {()=>  props.onPress('dishfeedback')}/>
+                        onPress = {()=>  props.commPress('dishfeedback')}/>
                 </Card>
+            </Animatable.View>
             );
     }else{
         return(
@@ -118,7 +169,8 @@ class DishDetail extends Component<any, any>{
         return(
             <ScrollView keyboardShouldPersistTaps='handled'>
                     <RenderDish dish={dish} favorite={this.props.favorites.some( (el: any) => el === dishId)}
-                    onPress = {(e: String)=>  { console.log(e); e==='favorite' ? this.markFavorite(dishId) : this.toggleFeedbackModal()}}/>
+                    favPress = {(e: String)=>  { this.markFavorite(dishId)}} commPress = {e => this.toggleFeedbackModal()}
+                    toggleModal = {this.toggleFeedbackModal}/>
                     <RenderComments comments={this.props.comments.comments.filter((comment: any) => comment.dishId === dishId)}/>
                     <Modal
                      animationType='slide'
