@@ -1,5 +1,5 @@
 import React , {Component} from 'react';
-import {Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Alert, PanResponder} from 'react-native';
+import {Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Alert, PanResponder, Share} from 'react-native';
 import {Card, Icon, Rating, Input} from 'react-native-elements';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
@@ -122,6 +122,13 @@ function RenderDish(props: any){
                             onPress = {() => props.favorite ? alert('Already favorite') : props.favPress('favorite')}/>
                     <Icon raised reverse name={'pencil'} type='font-awesome' color="#512DA8" 
                         onPress = {()=>  props.commPress('dishfeedback')}/>
+                    <Icon
+                            raised
+                            reverse
+                            name='share'
+                            type='font-awesome'
+                            color='#51D2A8'
+                            onPress={() => shareDish(props.dish.name, props.dish.description, baseUrl + props.dish.image)} />
                 </Card>
             </Animatable.View>
             );
@@ -130,6 +137,16 @@ function RenderDish(props: any){
             <View></View>
         );
     }
+}
+
+const shareDish = (title, message, url) => {
+    Share.share({
+        title: title,
+        message: title + ': ' + message + ' ' + url,
+        url: url
+    },{
+        dialogTitle: 'Share ' + title
+    })
 }
 
 
@@ -145,6 +162,7 @@ class DishDetail extends Component<any, any>{
             rating: 0
         }
     }
+    
 
     markFavorite = (dishId: number) => {
        this.props.postFavorite(dishId);

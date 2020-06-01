@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, StyleSheet, Image, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, ScrollView, ToastAndroid } from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 import { Icon } from 'react-native-elements';
 import SafeAreaView from 'react-native-safe-area-view';
 import { NavigationContainer } from '@react-navigation/native';
@@ -14,6 +15,7 @@ import AboutUs from './AboutComponent';
 import ContactUs from './ContactComponent';
 import Reservation from './ReservationComponent';
 import Favorites from './FavoriteComponent';
+import Login from './LoginComponent';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -35,7 +37,8 @@ type RootStackParamList = {
     ContactUs: undefined
     DishDetail: {dishId: number},
     TableReservation: undefined,
-    FavoriteDish: undefined
+    FavoriteDish: undefined,
+    Login: undefined
   };
 
 const StackScreenOptions = {
@@ -76,7 +79,7 @@ function MenuStack(props: any){
             screenOptions={StackScreenOptions}
           >
             <Stack.Screen name="Menu" component={Menu} 
-                options={{title: 'Menu', headerLeft: () => {  return <Icon name="menu" size={24} color="white" onPress = {()=> props.navigation.toggleDrawer()}/> } }} />
+                options={{title: 'Menu', headerLeft: () => {  return <Icon name="home" size={24} color="white" onPress = {()=> props.navigation.toggleDrawer()}/> } }} />
             <Stack.Screen name="DishDetail" component={DishDetail} options={{ title: 'Dish Details' }} />
         </Stack.Navigator>
     );
@@ -134,19 +137,70 @@ function FavoriteDishStack(props: any){
 }
 
 
+//Login Component
+function LoginStack(props: any){
+    return(
+        <Stack.Navigator screenOptions={StackScreenOptions} >
+            <Stack.Screen name="Login" component={Login}
+                options={{ title: 'Login' ,  headerLeft: () => {  return <Icon name="menu" size={24} color="white" onPress = {()=> props.navigation.toggleDrawer()}/> } }} />
+        </Stack.Navigator>
+    );
+}
+
+
 class Main extends React.Component<any> {
 
+    constructor(props: any){
+        super(props);
+    }
+    
     componentDidMount(){
         this.props.fetchDishes();
         this.props.fetchLeaders();
         this.props.fetchComments();
         this.props.fetchPromos();
+
+        NetInfo.fetch()
+        .then((connectionInfo) => {
+            ToastAndroid.show('Initial Network Connectivity Type: '
+                + connectionInfo.type + ', effectiveType: ' + connectionInfo.isConnected,
+                ToastAndroid.LONG)
+        });
+
+        NetInfo.addEventListener(this.handleConnectivityChange);
     }
+
+    handleConnectivityChange = (connectionInfo: any) => {
+        switch (connectionInfo.type) {
+          case 'none':
+            ToastAndroid.show('You are now offline!', ToastAndroid.LONG);
+            break;
+          case 'wifi':
+            ToastAndroid.show('You are now connected to WiFi!', ToastAndroid.LONG);
+            break;
+          case 'cellular':
+            ToastAndroid.show('You are now connected to Cellular!', ToastAndroid.LONG);
+            break;
+          case 'unknown':
+            ToastAndroid.show('You now have unknown connection!', ToastAndroid.LONG);
+            break;
+          default:
+            break;
+        }
+      }
 
     render(){
         return(
         <NavigationContainer>
-            <Drawer.Navigator drawerContent={props => <CustomDrawerContentComponent {...props} />} drawerStyle={{backgroundColor: '#D1C4E9', width: 240}}>
+            <Drawer.Navigator initialRouteName='Home' drawerContent={props => <CustomDrawerContentComponent {...props} />} drawerStyle={{backgroundColor: '#D1C4E9', width: 240}}>
+                    <Drawer.Screen name="Login" component={LoginStack} 
+                        options= {{ title: 'Login', 
+                                    drawerLabel: "Login", 
+                                    drawerIcon: (tintColor) => (
+                                    <Icon name="sign-in" type="font-awesome" size={24}
+                                    color={tintColor.color} />
+                                )}}
+                    />
                     <Drawer.Screen name="Home" component={HomeStack} 
                         options= {{ title: 'Home', 
                                     drawerLabel: "Home", 
