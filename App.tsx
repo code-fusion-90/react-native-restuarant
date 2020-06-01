@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Main from './web-build/component/MainComponent'
+import Main from './App/component/MainComponent'
 import { Provider } from 'react-redux';
-import { ConfigureStore } from './web-build/redux/configureStore';
+import { ConfigureStore } from './App/redux/configureStore';
 import { PersistGate } from 'redux-persist/es/integration/react';
-import Loading from './web-build/component/LoadingComponent';
+import Loading from './App/component/LoadingComponent';
 
 const {persistor , store} = ConfigureStore();
 

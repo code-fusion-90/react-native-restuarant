@@ -1,0 +1,5 @@
+FROM node:alpine
+WORKDIR /json-server
+RUN npm install -g json-server 
+COPY ./ ./
+CMD ["json-server","--host","0.0.0.0","db.json"]

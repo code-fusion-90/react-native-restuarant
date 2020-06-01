@@ -1,0 +1,33 @@
+{
+  "files": {
+    "app.js": "/static/js/app.15f2ef2e.chunk.js",
+    "app.js.map": "/static/js/app.15f2ef2e.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.a6639e49.js",
+    "runtime~app.js.map": "/static/js/runtime~app.a6639e49.js.map",
+    "static/js/2.0a4a5c7c.chunk.js": "/static/js/2.0a4a5c7c.chunk.js",
+    "static/js/2.0a4a5c7c.chunk.js.map": "/static/js/2.0a4a5c7c.chunk.js.map",
+    "fonts/AntDesign.ttf": "/./fonts/AntDesign.ttf",
+    "fonts/Entypo.ttf": "/./fonts/Entypo.ttf",
+    "fonts/Feather.ttf": "/./fonts/Feather.ttf",
+    "fonts/FontAwesome.ttf": "/./fonts/FontAwesome.ttf",
+    "fonts/Foundation.ttf": "/./fonts/Foundation.ttf",
+    "fonts/Ionicons.ttf": "/./fonts/Ionicons.ttf",
+    "fonts/MaterialCommunityIcons.ttf": "/./fonts/MaterialCommunityIcons.ttf",
+    "fonts/MaterialIcons.ttf": "/./fonts/MaterialIcons.ttf",
+    "fonts/SimpleLineIcons.ttf": "/./fonts/SimpleLineIcons.ttf",
+    "index.html": "/index.html",
+    "manifest.json": "/manifest.json",
+    "serve.json": "/serve.json",
+    "static/media/bell.png": "/static/media/bell.a7b9dc9d.png",
+    "static/media/date_icon.png": "/static/media/date_icon.1edd5017.png",
+    "static/media/heart.png": "/static/media/heart.2327736b.png",
+    "static/media/logo.png": "/static/media/logo.eb267f35.png",
+    "static/media/rocket.png": "/static/media/rocket.51671417.png",
+    "static/media/star.png": "/static/media/star.004c2bbb.png"
+  },
+  "entrypoints": [
+    "static/js/runtime~app.a6639e49.js",
+    "static/js/2.0a4a5c7c.chunk.js",
+    "static/js/app.15f2ef2e.chunk.js"
+  ]
+}
