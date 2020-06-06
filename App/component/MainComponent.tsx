@@ -15,7 +15,8 @@ import AboutUs from './AboutComponent';
 import ContactUs from './ContactComponent';
 import Reservation from './ReservationComponent';
 import Favorites from './FavoriteComponent';
-import Login from './LoginComponent';
+import {Login} from './LoginComponent';
+import Test from './testComponent';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -38,7 +39,8 @@ type RootStackParamList = {
     DishDetail: {dishId: number},
     TableReservation: undefined,
     FavoriteDish: undefined,
-    Login: undefined
+    Login: undefined, 
+    Test: undefined
   };
 
 const StackScreenOptions = {
@@ -147,6 +149,16 @@ function LoginStack(props: any){
     );
 }
 
+//Test Component
+function TestStack(props: any){
+    return(
+        <Stack.Navigator screenOptions={StackScreenOptions} >
+            <Stack.Screen name="Test" component={Test}
+                options={{ title: 'Test' ,  headerLeft: () => {  return <Icon name="menu" size={24} color="white" onPress = {()=> props.navigation.toggleDrawer()}/> } }} />
+        </Stack.Navigator>
+    );
+}
+
 
 class Main extends React.Component<any> {
 
@@ -160,14 +172,31 @@ class Main extends React.Component<any> {
         this.props.fetchComments();
         this.props.fetchPromos();
 
-        /*NetInfo.fetch()
+        NetInfo.fetch()
         .then((connectionInfo) => {
             ToastAndroid.show('Initial Network Connectivity Type: '
                 + connectionInfo.type + ', effectiveType: ' + connectionInfo.isConnected,
-                ToastAndroid.LONG)
+                ToastAndroid.SHORT)
         });
 
-        NetInfo.addEventListener(this.handleConnectivityChange);*/
+       NetInfo.addEventListener(state => {
+           switch (state.type) {
+               case 'none':
+                    ToastAndroid.show('You are now offline!', ToastAndroid.SHORT);
+                    break;
+                case 'wifi':
+                    ToastAndroid.show('You are now connected to WiFi!', ToastAndroid.SHORT);
+                    break;
+                case 'cellular':
+                    ToastAndroid.show('You are now connected to Cellular!', ToastAndroid.SHORT);
+                    break;
+                case 'unknown':
+                    ToastAndroid.show('You now have unknown connection!', ToastAndroid.SHORT);
+                    break;
+                default:
+                    break;
+           }
+       });
     }
 
    /* handleConnectivityChange = (connectionInfo: any) => {
@@ -193,6 +222,14 @@ class Main extends React.Component<any> {
         return(
         <NavigationContainer>
             <Drawer.Navigator initialRouteName='Home' drawerContent={props => <CustomDrawerContentComponent {...props} />} drawerStyle={{backgroundColor: '#D1C4E9', width: 240}}>
+                    <Drawer.Screen name="Test" component={TestStack} 
+                        options= {{ title: 'Test', 
+                                    drawerLabel: "Test", 
+                                    drawerIcon: (tintColor) => (
+                                    <Icon name="sign-in" type="font-awesome" size={24}
+                                    color={tintColor.color} />
+                                )}}
+                    />
                     <Drawer.Screen name="Login" component={LoginStack} 
                         options= {{ title: 'Login', 
                                     drawerLabel: "Login", 
